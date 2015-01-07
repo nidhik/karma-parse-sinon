@@ -106,4 +106,47 @@ describe('Parse Cloud Code', function () {
         });
 
     });
+
+    describe('Parse.Object', function () {
+
+        describe ('save', function () {
+
+            it('is successful', function () {
+                 var Task = Parse.Object.extend('Task');
+                 var task = new Task();
+
+                 var success = sinon.spy();
+                 var error = sinon.spy();
+                
+                 task.save().then(success, error);
+
+                 success.called.should.be.true;
+                 error.called.should.not.be.true;
+
+            });
+
+        });
+
+    });
+
+    describe('Parse.Query', function () {
+
+        describe ('first', function () {
+
+            it('is successful', function () {
+                 var query = new Parse.Query("Task");
+
+                 var success = sinon.spy();
+                 var error = sinon.spy();
+
+                 query.first().then(success, error);
+
+                 success.called.should.be.true;
+                 error.called.should.not.be.true;
+
+            });
+
+        });
+
+    });
 });
