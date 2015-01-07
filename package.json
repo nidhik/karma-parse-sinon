@@ -9,8 +9,8 @@
   },
   "author": "Tyler Wolf <tyler@palominolabs.com>",
   "dependencies": {
-    "sinon": "~1.7.3",
-    "parse": "~1.2.13"
+    "sinon": "~1.8",
+    "parse": "~1.2.18"
   },
   "devDependencies": {
     "grunt": "~0.4.2",
