@@ -7,6 +7,7 @@ var should = require('should'),
 describe('Parse Cloud Code', function () {
     beforeEach(function (done) {
         Parse.Cloud.Simulator.reset();
+        Parse.Cloud.TestStore.reset();
         done();
     });
 
@@ -127,6 +128,39 @@ describe('Parse Cloud Code', function () {
 
             });
 
+            it('sets unique id if new', function () {
+                 var Task = Parse.Object.extend('Task');
+                 var task0 = new Task();
+                 var task1 = new Task();
+
+                 should.not.exist(task0.id);
+                 should.not.exist(task1.id);
+
+                 task0.save()
+                 task0.id.should.exist;
+
+                 task1.save();
+                 task1.id.should.exist;
+
+                 task0.id.should.not.equal(task1.id);
+            });
+
+            it('sets attributes in given hash', function () {
+                 var Task = Parse.Object.extend('Task');
+                 var task = new Task();
+
+                 task.save({'attr0' : 'val', 'attr1' : true, 'attr2' : 3});
+
+                 should.exist(task.get('attr0'));
+                 should.exist(task.get('attr1'));
+                 should.exist(task.get('attr2'));
+
+                 task.get('attr0').should.equal('val');
+                 task.get('attr1').should.equal(true);                 
+                 task.get('attr2').should.equal(3);
+                 
+                
+            });
         });
 
     });
@@ -141,20 +175,47 @@ describe('Parse Cloud Code', function () {
                 var task = new Task();
                 task.save();
 
-                 var query = new Parse.Query("Task");
-
-                 var success = sinon.spy();
-                 var error = sinon.spy();
-
-                 query.get(task.id, {
+                var query = new Parse.Query("Task");
+                var success = sinon.spy();
+                var error = sinon.spy();
+                
+                query.get(task.id, {
                     success: success,
                     error: error
-                 })
+                });
 
-                 success.called.should.be.true;
-                 success.args[0][0].should.equal(task);
+                success.called.should.be.true;
+                success.args[0][0].should.equal(task);
 
-                 error.called.should.not.be.true;
+                error.called.should.not.be.true;
+
+            });
+
+            it('does not return objects for invalid ids', function () {
+
+                
+                var success = sinon.spy();
+                var error = sinon.spy();
+                
+                var query = new Parse.Query("Task");
+                query.get('not-a-valid-id', {
+                    success: success,
+                    error: error
+                });
+
+                var success2 = sinon.spy();
+                var error2 = sinon.spy();
+
+                query.get(undefined, {
+                    success: success2,
+                    error: error2
+                });
+
+                success.called.should.not.be.true;
+                error.called.should.be.true;
+
+                success2.called.should.not.be.true;
+                error2.called.should.be.true;
 
             });
 
