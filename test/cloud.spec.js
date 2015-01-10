@@ -161,6 +161,27 @@ describe('Parse Cloud Code', function () {
                  
                 
             });
+
+            it('can be stubbed to go down error path', function () {
+                 var Task = Parse.Object.extend('Task');
+
+                 var stub = sinon.stub(Task.prototype, "save", function () {
+                    return Parse.Promise.error("Failed");
+                 });
+
+                 var task = new Task();
+
+                 var success = sinon.spy();
+                 var error = sinon.spy();
+                
+                 task.save().then(success, error);
+
+                 stub.called.should.be.true;
+                 success.called.should.not.be.true;
+                 error.called.should.be.true;
+                 
+                
+            });
         });
 
     });
@@ -193,7 +214,6 @@ describe('Parse Cloud Code', function () {
 
             it('does not return objects for invalid ids', function () {
 
-                
                 var success = sinon.spy();
                 var error = sinon.spy();
                 
@@ -217,6 +237,32 @@ describe('Parse Cloud Code', function () {
                 success2.called.should.not.be.true;
                 error2.called.should.be.true;
 
+            });
+
+            it('can be stubbed to go down error path', function () {
+
+                var Task = Parse.Object.extend('Task');
+                var task = new Task();
+                task.save();
+
+                var query = new Parse.Query("Task");
+
+                var stub = sinon.stub(query, 'get', function (id, options) {
+                    options.error();
+                });
+
+                var success = sinon.spy();
+                var error = sinon.spy();
+                
+                query.get(task.id, {
+                    success: success,
+                    error: error
+                });
+
+                stub.called.should.be.true;
+                success.called.should.not.be.true;
+                error.called.should.be.true;  
+                
             });
 
         });
