@@ -121,6 +121,8 @@ describe('Parse Cloud Code', function () {
                  task.save().then(success, error);
 
                  success.called.should.be.true;
+                 success.args[0][0].should.equal(task)
+
                  error.called.should.not.be.true;
 
             });
@@ -131,17 +133,27 @@ describe('Parse Cloud Code', function () {
 
     describe('Parse.Query', function () {
 
-        describe ('first', function () {
+        describe ('get', function () {
 
             it('is successful', function () {
+
+                var Task = Parse.Object.extend('Task');
+                var task = new Task();
+                task.save();
+
                  var query = new Parse.Query("Task");
 
                  var success = sinon.spy();
                  var error = sinon.spy();
 
-                 query.first().then(success, error);
+                 query.get(task.id, {
+                    success: success,
+                    error: error
+                 })
 
                  success.called.should.be.true;
+                 success.args[0][0].should.equal(task);
+
                  error.called.should.not.be.true;
 
             });
