@@ -10,7 +10,8 @@
   "author": "Tyler Wolf <tyler@palominolabs.com>",
   "dependencies": {
     "sinon": "~1.8",
-    "parse": "~1.2.18"
+    "parse": "~1.2.18",
+    "node-uuid" : "~1.4.2"
   },
   "devDependencies": {
     "grunt": "~0.4.2",
